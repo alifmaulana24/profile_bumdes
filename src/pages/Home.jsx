@@ -199,7 +199,7 @@ function KatalogSection() {
     setErrors({});
   };
 
-  const handleOrderSubmit = (e) => {
+  const handleOrderSubmit = async (e) => {
     e.preventDefault();
     const errs = {};
     if (!form.name.trim()) errs.name = 'Nama lengkap wajib diisi';
@@ -230,7 +230,7 @@ ${form.notes ? `• *Catatan:* ${form.notes}` : ''}
 _Mohon segera diproses, terima kasih!_
     `.trim();
 
-    const settings = getSettings();
+    const settings = await getSettings();
     const phoneNumber = settings.whatsapp || '62895405628686';
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(url, '_blank');
@@ -411,7 +411,15 @@ _Mohon segera diproses, terima kasih!_
 
 // ===== BERITA SECTION =====
 function BeritaSection() {
-  const news = getPublishedNews().slice(0, 3);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPublishedNews().then(data => {
+      setNews(data.slice(0, 3));
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <section id="berita" className="section-padding bg-bumdes-50">
@@ -427,7 +435,11 @@ function BeritaSection() {
           </Link>
         </div>
 
-        {news.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <div className="w-8 h-8 border-4 border-bumdes-200 border-t-bumdes-700 rounded-full animate-spin"></div>
+          </div>
+        ) : news.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-bumdes-100">
             <div className="text-5xl mb-4">📰</div>
             <h3 className="font-jakarta font-bold text-xl text-bumdes-800 mb-2">Belum Ada Berita</h3>
@@ -463,7 +475,7 @@ function KontakSection() {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -473,7 +485,7 @@ function KontakSection() {
 
     setErrors({});
 
-    const settings = getSettings();
+    const settings = await getSettings();
     const phoneNumber = settings.whatsapp || '62895405628686'; // Format internasional tanpa +
 
     const message = `

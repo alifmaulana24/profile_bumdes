@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -13,8 +13,18 @@ export default function NewsList() {
   const [category, setCategory] = useState('Semua');
   const [page, setPage] = useState(1);
 
-  const allNews = getPublishedNews();
-  const categories = ['Semua', ...getCategories()];
+  const [allNews, setAllNews] = useState([]);
+  const [categories, setCategories] = useState(['Semua']);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      setAllNews(await getPublishedNews());
+      setCategories(['Semua', ...(await getCategories())]);
+      setLoading(false);
+    };
+    loadData();
+  }, []);
 
   const filtered = useMemo(() => {
     return allNews.filter(n => {
@@ -97,7 +107,11 @@ export default function NewsList() {
               {category !== 'Semua' && <> dalam kategori "<strong>{category}</strong>"</>}
             </p>
 
-            {paginated.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-24">
+                <div className="w-8 h-8 border-4 border-bumdes-200 border-t-bumdes-700 rounded-full animate-spin"></div>
+              </div>
+            ) : paginated.length === 0 ? (
               <div className="text-center py-24 bg-white rounded-2xl border border-bumdes-100">
                 <Newspaper className="w-16 h-16 text-bumdes-200 mx-auto mb-4" />
                 <h3 className="font-jakarta font-bold text-xl text-bumdes-800 mb-2">Berita Tidak Ditemukan</h3>

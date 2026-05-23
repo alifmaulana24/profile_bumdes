@@ -5,32 +5,35 @@ const ProductContext = createContext(null);
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setProducts(getProducts());
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setProducts(await getProducts());
+    setLoading(false);
   }, []);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
 
-  const add = (product) => {
-    addProduct(product);
-    refresh();
+  const add = async (product) => {
+    await addProduct(product);
+    await refresh();
   };
 
-  const update = (id, updates) => {
-    updateProduct(id, updates);
-    refresh();
+  const update = async (id, updates) => {
+    await updateProduct(id, updates);
+    await refresh();
   };
 
-  const remove = (id) => {
-    deleteProduct(id);
-    refresh();
+  const remove = async (id) => {
+    await deleteProduct(id);
+    await refresh();
   };
 
   return (
-    <ProductContext.Provider value={{ products, add, update, remove, refresh }}>
+    <ProductContext.Provider value={{ products, add, update, remove, refresh, loading }}>
       {children}
     </ProductContext.Provider>
   );

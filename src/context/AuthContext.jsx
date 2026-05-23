@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getSession, saveSession, clearSession, getCredentials, hashPassword, initializeStorage } from '../utils/storage';
+import { getSession, saveSession, clearSession, getCredentials, hashPassword } from '../utils/storage';
 
 const AuthContext = createContext(null);
 
@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initializeStorage();
     const stored = getSession();
     if (stored && stored.expiresAt > Date.now()) {
       setSession(stored);
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback(async (username, password) => {
-    const creds = getCredentials();
+    const creds = await getCredentials();
     const hashedInput = await hashPassword(password);
     // Cek apakah password cocok dengan hash, ATAU cocok dengan plain text (jika diubah manual di kode)
     if (username === creds.username && (hashedInput === creds.password || password === creds.password)) {

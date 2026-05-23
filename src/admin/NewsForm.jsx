@@ -19,8 +19,12 @@ export default function NewsForm() {
   const navigate = useNavigate();
   const { news, addNews, updateNews, getById } = useNews();
   const { session } = useAuth();
-  const categories = getCategories();
+  const [categories, setCategories] = useState([]);
   const isEdit = Boolean(id);
+
+  useEffect(() => {
+    getCategories().then(setCategories);
+  }, []);
 
   const [form, setForm] = useState(() => {
     if (isEdit) {
@@ -64,14 +68,14 @@ export default function NewsForm() {
     return e;
   };
 
-  const handleSave = (status) => {
+  const handleSave = async (status) => {
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     const data = { ...form, status };
     if (isEdit) {
-      updateNews(id, data);
+      await updateNews(id, data);
     } else {
-      addNews(data);
+      await addNews(data);
     }
     setSaved(true);
     setTimeout(() => { setSaved(false); navigate('/admin/berita'); }, 1200);

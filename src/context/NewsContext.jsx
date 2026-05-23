@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import {
   getNews, addNews, updateNews, deleteNews, toggleNewsStatus,
   getPublishedNews, getNewsBySlug, getNewsById
@@ -7,29 +7,38 @@ import {
 const NewsContext = createContext(null);
 
 export const NewsProvider = ({ children }) => {
-  const [news, setNews] = useState(() => getNews());
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => setNews(getNews()), []);
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setNews(await getNews());
+    setLoading(false);
+  }, []);
 
-  const handleAdd = useCallback((item) => {
-    const added = addNews(item);
+  useEffect(() => {
     refresh();
+  }, [refresh]);
+
+  const handleAdd = useCallback(async (item) => {
+    const added = await addNews(item);
+    await refresh();
     return added;
   }, [refresh]);
 
-  const handleUpdate = useCallback((id, updates) => {
-    updateNews(id, updates);
-    refresh();
+  const handleUpdate = useCallback(async (id, updates) => {
+    await updateNews(id, updates);
+    await refresh();
   }, [refresh]);
 
-  const handleDelete = useCallback((id) => {
-    deleteNews(id);
-    refresh();
+  const handleDelete = useCallback(async (id) => {
+    await deleteNews(id);
+    await refresh();
   }, [refresh]);
 
-  const handleToggle = useCallback((id) => {
-    toggleNewsStatus(id);
-    refresh();
+  const handleToggle = useCallback(async (id) => {
+    await toggleNewsStatus(id);
+    await refresh();
   }, [refresh]);
 
   const published = news
@@ -40,7 +49,7 @@ export const NewsProvider = ({ children }) => {
 
   return (
     <NewsContext.Provider value={{
-      news, published, drafts, refresh,
+      news, published, drafts, refresh, loading,
       addNews: handleAdd,
       updateNews: handleUpdate,
       deleteNews: handleDelete,

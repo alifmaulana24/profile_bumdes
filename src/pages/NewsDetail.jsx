@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Calendar, User, Tag, Clock, ArrowLeft, ArrowRight, ChevronLeft, Share2, Copy, CheckCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MarkdownRenderer from '../components/MarkdownRenderer';
@@ -12,9 +12,31 @@ export default function NewsDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [news, setNews] = useState(null);
+  const [allPublished, setAllPublished] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const news = getNewsBySlug(slug);
-  const allPublished = getPublishedNews();
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setNews(await getNewsBySlug(slug));
+      setAllPublished(await getPublishedNews());
+      setLoading(false);
+    };
+    loadData();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="pt-20 min-h-screen flex items-center justify-center bg-bumdes-50">
+          <div className="w-8 h-8 border-4 border-bumdes-200 border-t-bumdes-700 rounded-full animate-spin"></div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   if (!news) {
     return (
