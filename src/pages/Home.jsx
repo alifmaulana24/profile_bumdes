@@ -4,6 +4,7 @@ import { ChevronDown, ArrowRight, Phone, Mail, MapPin, Send, CheckCircle, Users,
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import NewsCard from '../components/NewsCard';
+import OrganizationStructure from '../components/OrganizationStructure';
 import AnimatedCounter from '../components/AnimatedCounter';
 import { contactInfo } from '../data/contact';
 import { getPublishedNews, getSettings } from '../utils/storage';
@@ -615,6 +616,7 @@ export default function Home() {
       <main>
         <HeroSection />
         <TentangSection />
+        <OrganizationStructure />
         <KatalogSection />
         <BeritaSection />
         <KontakSection />

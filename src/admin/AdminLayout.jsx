@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Leaf, LayoutDashboard, Newspaper, Settings, LogOut, Menu, X, Package } from 'lucide-react';
+import { Leaf, LayoutDashboard, Newspaper, Settings, LogOut, Menu, X, Package, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,6 +7,7 @@ const NAV = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/admin/berita', icon: Newspaper, label: 'Manajemen Berita' },
   { to: '/admin/produk', icon: Package, label: 'Manajemen Produk' },
+  { to: '/admin/pengurus', icon: Users, label: 'Manajemen Pengurus' },
   { to: '/admin/pengaturan', icon: Settings, label: 'Pengaturan' },
 ];
 

@@ -69,3 +69,20 @@ ALTER TABLE public.admin_users DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.news DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
+
+-- === TABEL ORGANIZATION ===
+CREATE TABLE IF NOT EXISTS public.organization (
+    id text PRIMARY KEY,
+    name text,
+    role_label text,
+    order_index integer
+);
+
+-- Masukkan data pengurus default
+INSERT INTO public.organization (id, name, role_label, order_index) VALUES
+('direktur', 'Syaiful Rijal', 'Kepala Direktur', 1),
+('sekretaris', '-', 'Sekretaris', 2),
+('bendahara', '-', 'Bendahara', 3)
+ON CONFLICT (id) DO NOTHING;
+
+ALTER TABLE public.organization DISABLE ROW LEVEL SECURITY;

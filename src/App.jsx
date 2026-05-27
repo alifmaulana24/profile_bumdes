@@ -18,6 +18,7 @@ import NewsManager from './admin/NewsManager';
 import NewsForm from './admin/NewsForm';
 import ProductManager from './admin/ProductManager';
 import AdminSettings from './admin/AdminSettings';
+import OrganizationManager from './admin/OrganizationManager';
 
 function PageLoader() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/admin/berita/baru" element={<ProtectedRoute><NewsForm /></ProtectedRoute>} />
               <Route path="/admin/berita/:id/edit" element={<ProtectedRoute><NewsForm /></ProtectedRoute>} />
               <Route path="/admin/produk" element={<ProtectedRoute><ProductManager /></ProtectedRoute>} />
+              <Route path="/admin/pengurus" element={<ProtectedRoute><OrganizationManager /></ProtectedRoute>} />
               <Route path="/admin/pengaturan" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
 
               {/* 404 */}
